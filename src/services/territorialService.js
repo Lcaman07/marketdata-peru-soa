@@ -1,16 +1,28 @@
 
-/**
- * Servicio Territorial - MarketData Perú
- * Validación de códigos UBIGEO.
- */
+const { buscarUbigeo } = require('../adapters/ineiAdapter');
 
+// Validar el formato del UBIGEO
 function validarUbigeo(ubigeo) {
-    // El UBIGEO debe contener exactamente 6 números
     const formato = /^[0-9]{6}$/;
 
-    return formato.test(ubigeo);
+    return typeof ubigeo === 'string'
+        && formato.test(ubigeo);
+}
+
+// Consultar información territorial del INEI
+function consultarUbigeo(ubigeo) {
+
+    if (!validarUbigeo(ubigeo)) {
+        throw new Error('El UBIGEO debe contener exactamente 6 números');
+    }
+
+    // Obtener información desde el adaptador
+    const territorio = buscarUbigeo(ubigeo);
+
+    return territorio;
 }
 
 module.exports = {
-    validarUbigeo
+    validarUbigeo,
+    consultarUbigeo
 };

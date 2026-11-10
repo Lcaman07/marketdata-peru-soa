@@ -153,3 +153,7 @@ vite.config.ts.timestamp-*
 
 # Archivos originales del INEI
 data/inei/*.xlsx
+
+
+# Padron SUNAT - archivo local de gran tamaño
+data/sunat/

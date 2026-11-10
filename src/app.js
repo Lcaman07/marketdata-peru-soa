@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const saludRoutes = require('./routes/saludRoutes');
 const territorialRoutes = require('./routes/territorialRoutes');
+const empresarialRoutes = require('./routes/empresarialRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,6 +15,7 @@ app.use(express.json());
 // Registrar las rutas
 app.use('/api/salud', saludRoutes);
 app.use('/api/territorio', territorialRoutes);
+app.use('/api/empresas', empresarialRoutes);
 
 // Iniciar servidor
 app.listen(PORT, () => {

@@ -147,3 +147,9 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Archivos del sistema macOS
+.DS_Store
+
+# Archivos originales del INEI
+data/inei/*.xlsx

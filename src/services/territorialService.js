@@ -1,5 +1,8 @@
 
-const { buscarUbigeo } = require('../adapters/ineiAdapter');
+
+
+
+const { buscarUbigeo, listarDepartamentos, listarProvincias, listarDistritos } = require('../adapters/ineiAdapter');
 
 const { buscarPoblacion } = require('../adapters/poblacionAdapter');
 
@@ -39,7 +42,66 @@ function consultarUbigeo(ubigeo) {
     };
 }
 
+// Obtener la lista de departamentos del Perú
+function obtenerDepartamentos() {
+    const departamentos = listarDepartamentos();
+
+    return {
+        total: departamentos.length,
+        fuente: 'INEI - Archivo UBIGEO 2022',
+        departamentos: departamentos
+    };
+}
+
+
+// Obtener las provincias de un departamento
+function obtenerProvincias(codigoDepartamento) {
+
+    // Validar que el departamento tenga 2 dígitos
+    if (typeof codigoDepartamento !== 'string' ||
+        !/^[0-9]{2}$/.test(codigoDepartamento)) {
+        throw new Error('El código del departamento debe tener 2 números');
+    }
+
+    // Consultar las provincias mediante el adaptador
+    const provincias = listarProvincias(codigoDepartamento);
+
+    return {
+        codigoDepartamento,
+        total: provincias.length,
+        fuente: 'INEI - Archivo UBIGEO 2022',
+        provincias
+    };
+}
+
+// Obtener los distritos de una provincia
+function obtenerDistritos(codigoProvincia) {
+
+    // Validar el código de provincia
+    if (typeof codigoProvincia !== 'string' ||
+        !/^[0-9]{4}00$/.test(codigoProvincia)) {
+        throw new Error(
+            'El código de provincia debe tener 6 números y terminar en 00'
+        );
+    }
+
+    // Consultar el adaptador del INEI
+    const distritos = listarDistritos(codigoProvincia);
+
+    // Preparar respuesta para MarketData
+    return {
+        codigoProvincia,
+        total: distritos.length,
+        fuente: 'INEI - Archivo UBIGEO 2022',
+        distritos
+    };
+}
+
+
 module.exports = {
     validarUbigeo,
-    consultarUbigeo
+    consultarUbigeo,
+    obtenerDepartamentos,
+    obtenerProvincias,
+    obtenerDistritos
 };

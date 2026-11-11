@@ -8,7 +8,10 @@
 
     <title>MarketData Perú | Dashboard</title>
 
-    <link rel="stylesheet" href="/css/estilos.css">
+<link rel="stylesheet" href="/css/estilos.css">
+<link rel="stylesheet" href="/css/historial.css">
+<link rel="stylesheet" href="/css/bitacora.css">
+
 </head>
 <body>
 
@@ -62,49 +65,656 @@
                 </p>
             </div>
 
-            <section id="territorio">
-                <h2>Análisis territorial</h2>
-                <p>
-                    Indicadores y población proyectada
-                    obtenidos del INEI.
+            <!-- Indicadores generales del dashboard -->
+            <section class="resumen-dashboard">
+
+                <div class="resumen-encabezado">
+                    <h2>Indicadores generales</h2>
+                    <p>
+                        Información obtenida desde
+                        nuestros servicios REST.
+                    </p>
+                </div>
+
+                <div class="indicadores-grid">
+
+                    <article class="indicador-card">
+                        <span>Contribuyentes importados</span>
+                        <strong id="total-contribuyentes">—</strong>
+                        <small>Muestra local SUNAT</small>
+                    </article>
+
+                    <article class="indicador-card">
+                        <span>Contribuyentes activos</span>
+                        <strong id="total-activos">—</strong>
+                        <small>Estado ACTIVO</small>
+                    </article>
+
+                    <article class="indicador-card">
+                        <span>Condición HABIDO</span>
+                        <strong id="total-habidos">—</strong>
+                        <small>Padrón SUNAT</small>
+                    </article>
+
+                    <article class="indicador-card">
+                        <span>Con UBIGEO disponible</span>
+                        <strong id="total-ubigeo">—</strong>
+                        <small>Registros con ubicación</small>
+                    </article>
+
+                    <article class="indicador-card">
+                        <span>Departamentos y Callao</span>
+                        <strong id="total-departamentos">—</strong>
+                        <small>Catálogo territorial INEI</small>
+                    </article>
+
+                </div>
+
+                <p id="estado-indicadores"
+                   class="estado-indicadores">
+                    Cargando indicadores...
                 </p>
+
+                <p class="nota-fuente">
+                    Los datos empresariales corresponden
+                    únicamente a los registros importados
+                    en MySQL. No representan el total
+                    de empresas del Perú.
+                </p>
+
             </section>
 
-            <section id="comparar">
-                <h2>Comparar zonas</h2>
-                <p>
-                    Comparación poblacional entre distritos
-                    utilizando nuestras APIs REST.
-                </p>
-            </section>
+            <!-- Análisis territorial -->
 
-            <section id="empresas">
-                <h2>Consulta RUC</h2>
-                <p>
-                    Información empresarial del padrón
-                    reducido SUNAT almacenado localmente.
-                </p>
-            </section>
+<!-- Análisis territorial -->
+<section id="territorio">
 
-            <section id="historial">
-                <h2>Historial de consultas</h2>
-                <p>
-                    Consultas empresariales y análisis
-                    integrados registrados en MySQL.
-                </p>
-            </section>
+    <h2>Análisis territorial</h2>
 
-            <section id="bitacora">
-                <h2>Bitácora de integración SOA</h2>
-                <p>
-                    Operaciones, estados y tiempos
-                    de respuesta de nuestros servicios.
+    <p>
+        Evolución de la población proyectada
+        utilizando información oficial del INEI.
+    </p>
+
+<!-- Filtros territoriales del INEI -->
+<div class="filtros-territoriales">
+
+    <div class="filtro-grupo">
+        <label for="filtro-departamento">
+            Departamento
+        </label>
+
+        <select id="filtro-departamento">
+            <option value="">
+                Cargando departamentos...
+            </option>
+        </select>
+    </div>
+
+    <div class="filtro-grupo">
+        <label for="filtro-provincia">
+            Provincia
+        </label>
+
+        <select id="filtro-provincia" disabled>
+            <option value="">
+                Selecciona un departamento
+            </option>
+        </select>
+    </div>
+
+    <div class="filtro-grupo">
+        <label for="filtro-distrito">
+            Distrito
+        </label>
+
+        <select id="filtro-distrito" disabled>
+            <option value="">
+                Selecciona una provincia
+            </option>
+        </select>
+    </div>
+
+</div>
+
+    <div class="grafico-contenedor">
+
+        <div class="grafico-encabezado">
+            <div>
+                <h3>Evolución de la población</h3>
+                <p id="nombre-distrito">
+                    Cargando información territorial...
                 </p>
-            </section>
+            </div>
+
+            <div class="grafico-indicador">
+                <span>Población 2026</span>
+                <strong id="poblacion-2026">—</strong>
+            </div>
+        </div>
+
+        <div class="grafico-area">
+            <canvas id="grafico-poblacion"
+                    role="img"
+                    aria-label="Gráfico de evolución poblacional de 2018 a 2026">
+            </canvas>
+        </div>
+
+        <p class="grafico-fuente">
+            Fuente: INEI. Población proyectada al 30 de junio.
+        </p>
+
+    </div>
+
+</section>
+
+
+            <!-- Comparación de zonas -->
+
+<!-- Comparación territorial -->
+<section id="comparar">
+
+    <h2>Comparar zonas</h2>
+
+    <p>
+        Selecciona dos distritos del Perú para comparar
+        su población proyectada según el INEI.
+    </p>
+
+    <!-- Primera zona -->
+    <div class="comparacion-zona">
+
+        <h3>Zona A</h3>
+
+        <div class="filtros-territoriales">
+
+            <div class="filtro-grupo">
+                <label for="comparar-departamento-a">
+                    Departamento
+                </label>
+
+                <select id="comparar-departamento-a">
+                    <option value="">
+                        Cargando departamentos...
+                    </option>
+                </select>
+            </div>
+
+            <div class="filtro-grupo">
+                <label for="comparar-provincia-a">
+                    Provincia
+                </label>
+
+                <select id="comparar-provincia-a" disabled>
+                    <option value="">
+                        Selecciona un departamento
+                    </option>
+                </select>
+            </div>
+
+            <div class="filtro-grupo">
+                <label for="comparar-distrito-a">
+                    Distrito
+                </label>
+
+                <select id="comparar-distrito-a" disabled>
+                    <option value="">
+                        Selecciona una provincia
+                    </option>
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Segunda zona -->
+    <div class="comparacion-zona">
+
+        <h3>Zona B</h3>
+
+        <div class="filtros-territoriales">
+
+            <div class="filtro-grupo">
+                <label for="comparar-departamento-b">
+                    Departamento
+                </label>
+
+                <select id="comparar-departamento-b">
+                    <option value="">
+                        Cargando departamentos...
+                    </option>
+                </select>
+            </div>
+
+            <div class="filtro-grupo">
+                <label for="comparar-provincia-b">
+                    Provincia
+                </label>
+
+                <select id="comparar-provincia-b" disabled>
+                    <option value="">
+                        Selecciona un departamento
+                    </option>
+                </select>
+            </div>
+
+            <div class="filtro-grupo">
+                <label for="comparar-distrito-b">
+                    Distrito
+                </label>
+
+                <select id="comparar-distrito-b" disabled>
+                    <option value="">
+                        Selecciona una provincia
+                    </option>
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Botón de comparación -->
+    <button id="btn-comparar" type="button" disabled>
+        Comparar distritos
+    </button>
+
+    <p id="estado-comparacion" role="status">
+        Selecciona los dos distritos para realizar la comparación.
+    </p>
+
+    <!-- Indicadores comparativos -->
+    <div class="indicadores-grid">
+
+        <article class="indicador-card">
+            <span id="comparar-nombre-a">
+                Población Zona A
+            </span>
+            <strong id="comparar-valor-a">—</strong>
+            <small>Proyección 2026</small>
+        </article>
+
+        <article class="indicador-card">
+            <span id="comparar-nombre-b">
+                Población Zona B
+            </span>
+            <strong id="comparar-valor-b">—</strong>
+            <small>Proyección 2026</small>
+        </article>
+
+        <article class="indicador-card">
+            <span>Diferencia de habitantes</span>
+            <strong id="comparar-diferencia">—</strong>
+            <small>Diferencia absoluta · 2026</small>
+        </article>
+
+    </div>
+
+    <!-- Gráfico comparativo -->
+    <div class="grafico-contenedor">
+
+        <div class="grafico-encabezado">
+            <div>
+                <h3>Comparación de evolución poblacional</h3>
+                <p>
+                    Población proyectada entre 2018 y 2026.
+                </p>
+            </div>
+        </div>
+
+        <div class="grafico-area">
+            <canvas id="grafico-comparacion"
+                    role="img"
+                    aria-label="Comparación poblacional de dos distritos">
+            </canvas>
+        </div>
+
+        <p class="grafico-fuente">
+            Fuente: INEI. Proyecciones de población.
+        </p>
+
+    </div>
+
+</section>
+
+
+            <!-- Consulta empresarial -->
+
+<!-- Consulta empresarial SUNAT -->
+<section id="empresas">
+
+    <h2>Consulta RUC</h2>
+
+    <p>
+        Consulta información empresarial del padrón
+        reducido de SUNAT almacenado en nuestra
+        base de datos MySQL.
+    </p>
+
+    <!-- Formulario de búsqueda -->
+    <form id="form-consulta-ruc" class="formulario-ruc">
+
+        <div class="filtro-grupo">
+
+            <label for="input-ruc">
+                Número de RUC
+            </label>
+
+            <input
+                type="text"
+                id="input-ruc"
+                name="ruc"
+                placeholder="Ingresa un RUC de 11 dígitos"
+                maxlength="11"
+                minlength="11"
+                inputmode="numeric"
+                pattern="[0-9]{11}"
+                required
+            >
+
+        </div>
+
+        <button type="submit" id="btn-consultar-ruc">
+            Consultar RUC
+        </button>
+
+    </form>
+
+    <!-- Estado de la consulta -->
+    <p id="estado-consulta-ruc" role="status">
+        Ingresa un RUC para consultar su información.
+    </p>
+
+    <!-- Ficha de resultados -->
+    <div id="resultado-ruc"
+         class="ficha-empresarial"
+         hidden>
+
+        <div class="ficha-encabezado">
+
+            <div>
+                <span class="ficha-etiqueta">
+                    Información del contribuyente
+                </span>
+
+                <h3 id="ruc-razon-social">—</h3>
+
+                <p id="ruc-numero">—</p>
+            </div>
+
+            <span id="ruc-estado"
+                  class="estado-empresa">
+                —
+            </span>
+
+        </div>
+
+        <div class="ficha-datos">
+
+            <div class="ficha-campo">
+                <span>RUC</span>
+                <strong id="ruc-detalle">—</strong>
+            </div>
+
+            <div class="ficha-campo">
+                <span>Estado del contribuyente</span>
+                <strong id="ruc-estado-detalle">—</strong>
+            </div>
+
+            <div class="ficha-campo">
+                <span>Condición del domicilio</span>
+                <strong id="ruc-condicion">—</strong>
+            </div>
+
+            <div class="ficha-campo">
+                <span>UBIGEO</span>
+                <strong id="ruc-ubigeo">—</strong>
+            </div>
+
+        </div>
+
+        <p class="ficha-fuente">
+            Fuente: Padrón reducido SUNAT, copia local.
+            La información no corresponde a una
+            consulta en tiempo real.
+        </p>
+
+    </div>
+
+    <p class="nota-fuente">
+        La búsqueda se realiza únicamente sobre
+        los registros importados en MySQL.
+        Un RUC no encontrado podría existir
+        en el padrón completo de SUNAT.
+    </p>
+
+</section>
+
+
+
+<!-- Historial de consultas -->
+<section id="historial">
+
+    <h2>Historial de consultas</h2>
+
+    <p>
+        Registro de consultas empresariales y análisis
+        integrados mediante nuestra arquitectura SOA.
+    </p>
+
+    <!-- Resumen del historial -->
+    <div class="indicadores-grid historial-indicadores">
+
+        <article class="indicador-card">
+            <span>Consultas empresariales</span>
+            <strong id="historial-empresariales">—</strong>
+            <small>Servicio Empresarial</small>
+        </article>
+
+        <article class="indicador-card">
+            <span>Análisis integrados</span>
+            <strong id="historial-orquestador">—</strong>
+            <small>Orquestador SOA</small>
+        </article>
+
+        <article class="indicador-card">
+            <span>Total de registros</span>
+            <strong id="historial-total">—</strong>
+            <small>Registros consultados</small>
+        </article>
+
+    </div>
+
+    <!-- Encabezado de la tabla -->
+    <div class="historial-encabezado">
+
+        <div>
+            <h3>Registro de operaciones</h3>
+            <p>
+                Consultas almacenadas en nuestra
+                base de datos MySQL.
+            </p>
+        </div>
+
+        <button type="button" id="btn-actualizar-historial">
+            Actualizar historial
+        </button>
+
+    </div>
+
+    <!-- Estado de carga -->
+    <p id="estado-historial" role="status">
+        Preparando historial...
+    </p>
+
+    <!-- Tabla de consultas -->
+    <div class="tabla-contenedor">
+
+        <table class="tabla-historial">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo de consulta</th>
+                    <th>RUC</th>
+                    <th>UBIGEO</th>
+                    <th>Estado</th>
+                    <th>Fecha y hora</th>
+                    <th>Tiempo de respuesta</th>
+                </tr>
+            </thead>
+
+            <tbody id="tabla-historial-cuerpo">
+                <tr>
+                    <td colspan="7">
+                        El historial se cargará desde las APIs.
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <p class="nota-fuente">
+        Fuente: Registros de consultas almacenados en MySQL.
+        El historial empresarial y el del orquestador
+        se obtienen desde servicios REST independientes.
+    </p>
+
+</section>
+
+
+
+<!-- Bitácora de integración SOA -->
+<section id="bitacora">
+
+    <h2>Bitácora de integración SOA</h2>
+
+    <p>
+        Monitoreo de las operaciones del Servicio Empresarial,
+        registradas en nuestra base de datos MySQL.
+    </p>
+
+    <!-- Indicadores de la bitácora -->
+    <div class="indicadores-grid bitacora-indicadores">
+
+        <article class="indicador-card">
+            <span>Operaciones consultadas</span>
+            <strong id="bitacora-total">—</strong>
+            <small>Registros de integración</small>
+        </article>
+
+        <article class="indicador-card">
+            <span>Operaciones exitosas</span>
+            <strong id="bitacora-exitos">—</strong>
+            <small>Estado EXITO</small>
+        </article>
+
+        <article class="indicador-card">
+            <span>Operaciones con error</span>
+            <strong id="bitacora-errores">—</strong>
+            <small>Estado ERROR</small>
+        </article>
+
+        <article class="indicador-card">
+            <span>Tiempo promedio</span>
+            <strong id="bitacora-tiempo">—</strong>
+            <small>Milisegundos</small>
+        </article>
+
+    </div>
+
+    <!-- Encabezado del registro -->
+    <div class="bitacora-encabezado">
+
+        <div>
+            <h3>Registro de integraciones</h3>
+            <p>
+                Operaciones y tiempos de respuesta
+                del Servicio Empresarial.
+            </p>
+        </div>
+
+        <button type="button" id="btn-actualizar-bitacora">
+            Actualizar bitácora
+        </button>
+
+    </div>
+
+    <p id="estado-bitacora" role="status">
+        Preparando registros de integración...
+    </p>
+
+    <!-- Tabla de integración -->
+    <div class="tabla-contenedor">
+
+        <table class="tabla-historial tabla-bitacora">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Servicio</th>
+                    <th>Operación</th>
+                    <th>RUC</th>
+                    <th>Tipo de acceso</th>
+                    <th>Estado</th>
+                    <th>Código HTTP</th>
+                    <th>Tiempo</th>
+                    <th>Fecha y hora</th>
+                    <th>Mensaje</th>
+                </tr>
+            </thead>
+
+            <tbody id="tabla-bitacora-cuerpo">
+                <tr>
+                    <td colspan="10">
+                        Los registros se cargarán desde MySQL.
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <p class="nota-fuente">
+        Fuente: Bitácora de integración almacenada en MySQL.
+        Esta vista muestra actualmente las operaciones
+        empresariales disponibles en nuestra API.
+        Los códigos HTTP y el estado de ejecución
+        deben interpretarse de forma independiente.
+    </p>
+
+</section>
+
 
         </main>
 
     </div>
+
+
+
+<!-- Indicadores generales -->
+<script src="/js/dashboard.js"></script>
+
+<!-- Biblioteca de gráficos -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+
+<!-- Gráfico poblacional -->
+<script src="/js/poblacion.js"></script>
+
+<!-- Filtros territoriales -->
+<script src="/js/filtrosTerritoriales.js"></script>
+
+<script src="/js/comparacion.js"></script>
+
+<!-- Consulta empresarial SUNAT -->
+<script src="/js/consultaRuc.js"></script>
+
+<script src="/js/historial.js"></script>
+
+<!-- Bitácora de integración SOA -->
+<script src="/js/bitacora.js"></script>
 
 </body>
 </html>

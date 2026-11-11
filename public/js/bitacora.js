@@ -192,6 +192,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     boton.addEventListener('click', cargarBitacora);
 
+    // Actualizar automáticamente al entrar a la bitácora
+window.addEventListener('hashchange', () => {
+    if (window.location.hash === '#bitacora') {
+        cargarBitacora();
+    }
+});
+
     // Cargar automáticamente al abrir la página
     cargarBitacora();
 

@@ -212,6 +212,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Actualizar sin recargar toda la página
     boton.addEventListener('click', cargarHistorial);
 
+
+// Actualizar al seleccionar Historial en el menú lateral
+const enlaceHistorial = document.querySelector(
+    '.sidebar-nav a[href="#historial"]'
+);
+
+if (enlaceHistorial) {
+    enlaceHistorial.addEventListener('click', () => {
+        cargarHistorial();
+    });
+}
+
     // Primera carga automática
     cargarHistorial();
 

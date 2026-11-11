@@ -134,6 +134,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 `/api/orquestador/analisis/${encodeURIComponent(ubigeo)}/${encodeURIComponent(ruc)}`
             );
 
+
+// Actualizar el historial y la bitácora después del análisis SOA
+document.getElementById('btn-actualizar-historial')?.click();
+document.getElementById('btn-actualizar-bitacora')?.click();
+
             const resultado = await respuesta.json();
 
             if (!respuesta.ok) {

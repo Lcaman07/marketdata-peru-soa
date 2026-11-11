@@ -88,6 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 `/api/empresas/ruc/${encodeURIComponent(ruc)}`
             );
 
+// Actualizar el historial y la bitácora después de la consulta
+document.getElementById('btn-actualizar-historial')?.click();
+document.getElementById('btn-actualizar-bitacora')?.click();
+
+
             if (respuesta.status === 400) {
                 throw new Error(
                     'El número de RUC no es válido.'

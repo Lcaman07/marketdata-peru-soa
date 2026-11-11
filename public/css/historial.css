@@ -205,3 +205,48 @@
         margin-left: 0;
     }
 }
+
+
+
+.busqueda-historial {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 340px;
+    margin: 16px 0 20px;
+}
+
+.busqueda-historial label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-texto);
+}
+
+.busqueda-historial input {
+    width: 100%;
+    height: 42px;
+    padding: 0 14px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--color-texto);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.busqueda-historial input:focus {
+    border-color: var(--color-principal);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.busqueda-historial input::placeholder {
+    color: #94a3b8;
+}
+
+@media (max-width: 600px) {
+    .busqueda-historial {
+        max-width: 100%;
+    }
+}

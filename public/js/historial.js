@@ -26,8 +26,13 @@ const filtroEstado = document.getElementById(
     'filtro-estado-historial'
 );
 
-if (!cuerpo || !boton || !estado || !filtroTipo || !filtroEstado) return;
-// Conservar los registros para filtrarlos sin consultar la API
+const buscarRuc = document.getElementById(
+    'buscar-ruc-historial'
+);
+
+ if (!cuerpo || !boton || !estado ||
+    !filtroTipo || !filtroEstado || !buscarRuc) return;
+    // Conservar los registros para filtrarlos sin consultar la API
 
 let registrosCargados = [];
 
@@ -123,12 +128,14 @@ let registrosCargados = [];
 
 
 
+
 function aplicarFiltro() {
 
     const tipoSeleccionado = filtroTipo.value;
     const estadoSeleccionado = filtroEstado.value;
+    const rucBuscado = buscarRuc.value.trim();
 
-    // Aplicar ambos filtros al mismo tiempo
+    // Aplicar los tres filtros al mismo tiempo
     const registrosFiltrados = registrosCargados.filter(registro => {
 
         const coincideTipo =
@@ -139,17 +146,22 @@ function aplicarFiltro() {
             estadoSeleccionado === 'todos' ||
             registro.estado === estadoSeleccionado;
 
-        return coincideTipo && coincideEstado;
+        const coincideRuc =
+            rucBuscado === '' ||
+            String(registro.ruc ?? '').includes(rucBuscado);
+
+        return coincideTipo && coincideEstado && coincideRuc;
     });
 
-    // Actualizar la tabla
+    // Actualizar las filas de la tabla
     mostrarRegistros(registrosFiltrados);
 
-    // Mostrar cantidad de registros visibles
+    // Informar cuántos registros coinciden
     estado.textContent =
         `Mostrando ${registrosFiltrados.length} de ` +
         `${registrosCargados.length} registros consultados.`;
 }
+
 
 
     // Cargar y combinar ambos historiales
@@ -255,6 +267,8 @@ aplicarFiltro();
 filtroTipo.addEventListener('change', aplicarFiltro);
 // Filtrar también por estado
 filtroEstado.addEventListener('change', aplicarFiltro);
+// Buscar por RUC mientras el usuario escribe
+buscarRuc.addEventListener('input', aplicarFiltro);
 
 // Actualizar al seleccionar Historial en el menú lateral
 const enlaceHistorial = document.querySelector(

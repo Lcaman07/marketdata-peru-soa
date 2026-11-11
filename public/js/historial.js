@@ -18,7 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
         'estado-historial'
     );
 
-    if (!cuerpo || !boton || !estado) return;
+const filtroTipo = document.getElementById(
+    'filtro-tipo-historial'
+);
+
+const filtroEstado = document.getElementById(
+    'filtro-estado-historial'
+);
+
+if (!cuerpo || !boton || !estado || !filtroTipo || !filtroEstado) return;
+// Conservar los registros para filtrarlos sin consultar la API
+
+let registrosCargados = [];
 
     // Mostrar cantidades en las tarjetas
     function mostrarCantidad(id, cantidad) {
@@ -110,6 +121,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+
+
+function aplicarFiltro() {
+
+    const tipoSeleccionado = filtroTipo.value;
+    const estadoSeleccionado = filtroEstado.value;
+
+    // Aplicar ambos filtros al mismo tiempo
+    const registrosFiltrados = registrosCargados.filter(registro => {
+
+        const coincideTipo =
+            tipoSeleccionado === 'todos' ||
+            registro.tipo === tipoSeleccionado;
+
+        const coincideEstado =
+            estadoSeleccionado === 'todos' ||
+            registro.estado === estadoSeleccionado;
+
+        return coincideTipo && coincideEstado;
+    });
+
+    // Actualizar la tabla
+    mostrarRegistros(registrosFiltrados);
+
+    // Mostrar cantidad de registros visibles
+    estado.textContent =
+        `Mostrando ${registrosFiltrados.length} de ` +
+        `${registrosCargados.length} registros consultados.`;
+}
+
+
     // Cargar y combinar ambos historiales
     async function cargarHistorial() {
         boton.disabled = true;
@@ -183,7 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
             new Date(a.fecha_consulta).getTime()
         );
 
-        mostrarRegistros(registros);
+registrosCargados = registros;
+aplicarFiltro();
 
         const errores = resultados.filter(
             resultado => resultado.status === 'rejected'
@@ -191,9 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (errores === 0) {
             mostrarCantidad('historial-total', registros.length);
-
-            estado.textContent =
-                `${registros.length} registros cargados correctamente.`;
         } else {
             document.getElementById(
                 'historial-total'
@@ -211,7 +251,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Actualizar sin recargar toda la página
     boton.addEventListener('click', cargarHistorial);
-
+// Filtrar sin realizar otra consulta a MySQL
+filtroTipo.addEventListener('change', aplicarFiltro);
+// Filtrar también por estado
+filtroEstado.addEventListener('change', aplicarFiltro);
 
 // Actualizar al seleccionar Historial en el menú lateral
 const enlaceHistorial = document.querySelector(

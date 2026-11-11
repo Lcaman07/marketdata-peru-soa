@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="/css/empresas.css">
 <link rel="stylesheet" href="/css/historial.css">
 <link rel="stylesheet" href="/css/bitacora.css">
-
+<link rel="stylesheet" href="/css/integracion.css">
 
 </head>
 <body>
@@ -43,6 +43,10 @@
 
                 <a href="#empresas">
                     Consulta RUC
+                </a>
+
+                <a href="#integracion">
+                    Análisis integrado SOA
                 </a>
 
                 <a href="#historial">
@@ -495,6 +499,102 @@
 </section>
 
 
+<!-- Análisis integrado SOA -->
+<section id="integracion">
+
+    <h2>Análisis integrado SOA</h2>
+
+    <p>
+        Integra la información territorial del INEI
+        con los registros empresariales del padrón
+        reducido SUNAT almacenados en MySQL.
+    </p>
+
+    <form id="form-analisis-soa" class="formulario-soa">
+
+        <div class="filtro-grupo">
+            <label for="soa-ubigeo">
+                UBIGEO del distrito
+            </label>
+
+            <input
+                type="text"
+                id="soa-ubigeo"
+                value="010101"
+                maxlength="6"
+                inputmode="numeric"
+                pattern="[0-9]{6}"
+                required
+            >
+        </div>
+
+        <div class="filtro-grupo">
+            <label for="soa-ruc">
+                Número de RUC
+            </label>
+
+            <input
+                type="text"
+                id="soa-ruc"
+                placeholder="RUC de 11 dígitos"
+                maxlength="11"
+                inputmode="numeric"
+                pattern="[0-9]{11}"
+                required
+            >
+        </div>
+
+        <button type="submit" id="btn-analizar-soa">
+            Ejecutar análisis
+        </button>
+
+    </form>
+
+    <p id="estado-analisis-soa" role="status">
+        Ingresa los datos para iniciar el análisis integrado.
+    </p>
+
+    <div id="resultado-analisis-soa" hidden>
+
+        <div class="indicadores-grid">
+
+            <article class="indicador-card">
+                <span>Estado del análisis</span>
+                <strong id="soa-estado">—</strong>
+            </article>
+
+            <article class="indicador-card">
+                <span>Distrito consultado</span>
+                <strong id="soa-distrito">—</strong>
+            </article>
+
+            <article class="indicador-card">
+                <span>Población 2026</span>
+                <strong id="soa-poblacion">—</strong>
+            </article>
+
+            <article class="indicador-card">
+                <span>Estado empresarial</span>
+                <strong id="soa-empresa">—</strong>
+            </article>
+
+        </div>
+
+        <div class="grafico-contenedor">
+            <h3>Resultado de la integración</h3>
+            <p id="soa-mensaje">—</p>
+        </div>
+
+    </div>
+
+    <p class="nota-fuente">
+        Las fuentes son INEI y una copia local del padrón
+        SUNAT. La integración no constituye una consulta
+        en tiempo real a SUNAT.
+    </p>
+
+</section>
+
 
 <!-- Historial de consultas -->
 <section id="historial">
@@ -723,6 +823,9 @@
 
 <!-- Navegación dinámica -->
 <script src="/js/navegacion.js"></script>
+
+<!-- Análisis integrado SOA -->
+<script src="/js/integracion.js"></script>
 
 </body>
 </html>

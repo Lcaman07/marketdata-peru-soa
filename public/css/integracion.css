@@ -1,0 +1,149 @@
+
+/* ========================================
+   MARKETDATA PERÚ - INTEGRACIÓN SOA
+======================================== */
+
+/* Formulario del orquestador */
+
+.formulario-soa {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+    align-items: end;
+    gap: 16px;
+    margin: 24px 0 20px;
+    padding: 24px;
+    background: #f8fafc;
+    border: 1px solid var(--color-borde);
+    border-radius: 12px;
+}
+
+.formulario-soa .filtro-grupo {
+    min-width: 0;
+}
+
+/* Campos de entrada */
+
+.formulario-soa input {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    color: var(--color-texto);
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.formulario-soa input:focus {
+    border-color: var(--color-principal);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* Botón ejecutar análisis */
+
+#btn-analizar-soa {
+    height: 44px;
+    padding: 0 22px;
+    background: var(--color-principal);
+    border: none;
+    border-radius: 8px;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+#btn-analizar-soa:hover:not(:disabled) {
+    background: #1d4ed8;
+}
+
+#btn-analizar-soa:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* Mensaje del análisis */
+
+#estado-analisis-soa {
+    margin: 18px 0;
+    color: var(--color-secundario);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* Resultados */
+
+#resultado-analisis-soa[hidden] {
+    display: none;
+}
+
+#resultado-analisis-soa .indicadores-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin: 22px 0;
+}
+
+#resultado-analisis-soa .indicador-card {
+    min-width: 0;
+    padding: 20px;
+}
+
+#resultado-analisis-soa .indicador-card strong {
+    font-size: 21px;
+    line-height: 1.4;
+    letter-spacing: -0.5px;
+    overflow-wrap: anywhere;
+}
+
+/* Panel del resultado de integración */
+
+#integracion .grafico-contenedor {
+    margin-top: 20px;
+    background: #f8fafc;
+}
+
+#integracion .grafico-contenedor h3 {
+    margin: 0 0 12px;
+    color: var(--color-texto);
+    font-size: 17px;
+}
+
+#soa-mensaje {
+    color: var(--color-secundario);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* Diseño adaptable */
+
+@media (max-width: 1100px) {
+    .formulario-soa {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #btn-analizar-soa {
+        grid-column: 1 / -1;
+    }
+
+    #resultado-analisis-soa .indicadores-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .formulario-soa {
+        grid-template-columns: 1fr;
+        padding: 16px;
+    }
+
+    #resultado-analisis-soa .indicadores-grid {
+        grid-template-columns: 1fr;
+    }
+}

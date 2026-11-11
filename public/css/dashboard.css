@@ -1,0 +1,89 @@
+/* ========================================
+   MARKETDATA PERÚ - INDICADORES DASHBOARD
+======================================== */
+
+.resumen-dashboard {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+.resumen-encabezado {
+    margin-bottom: 20px;
+}
+
+.resumen-encabezado h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.resumen-encabezado p {
+    color: var(--color-secundario);
+    font-size: 14px;
+}
+
+.indicadores-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit, minmax(190px, 1fr)
+    );
+    gap: 16px;
+}
+
+/* Tarjetas */
+
+.indicador-card {
+    background: #ffffff;
+    border: 1px solid var(--color-borde);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.indicador-card:hover {
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    transform: translateY(-2px);
+}
+
+.indicador-card span {
+    color: var(--color-secundario);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.indicador-card strong {
+    color: var(--color-texto);
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.indicador-card small {
+    color: var(--color-secundario);
+    font-size: 12px;
+}
+
+/* Estado y procedencia de datos */
+
+.estado-indicadores {
+    margin-top: 16px;
+    color: var(--color-principal);
+    font-size: 13px;
+}
+
+.nota-fuente {
+    margin-top: 12px;
+    color: var(--color-secundario);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .indicadores-grid {
+        grid-template-columns: 1fr;
+    }
+}

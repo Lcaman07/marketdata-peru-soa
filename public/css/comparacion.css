@@ -1,0 +1,93 @@
+/* ========================================
+   MARKETDATA PERÚ - COMPARACIÓN TERRITORIAL
+======================================== */
+
+/* Separación de las zonas */
+
+.comparacion-zona {
+    margin-top: 24px;
+}
+
+.comparacion-zona h3 {
+    margin: 0 0 14px;
+    font-size: 15px;
+    font-weight: 650;
+    color: var(--color-texto);
+}
+
+.comparacion-zona .filtros-territoriales {
+    margin: 0;
+}
+
+/* Botón principal de comparación */
+
+#btn-comparar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    margin-top: 24px;
+    padding: 12px 24px;
+    background: var(--color-principal);
+    color: #ffffff;
+    border: 1px solid var(--color-principal);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+#btn-comparar:hover:not(:disabled) {
+    background: #1d4ed8;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.18);
+}
+
+#btn-comparar:focus-visible {
+    outline: 3px solid rgba(37, 99, 235, 0.3);
+    outline-offset: 3px;
+}
+
+#btn-comparar:disabled {
+    background: #e2e8f0;
+    border-color: #e2e8f0;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* Mensaje del resultado */
+
+#estado-comparacion {
+    margin: 14px 0 20px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--color-secundario);
+}
+
+/* Indicadores de comparación */
+
+#comparar .indicadores-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: 24px;
+}
+
+#comparar .indicador-card {
+    min-width: 0;
+}
+
+#comparar .indicador-card strong {
+    font-size: 30px;
+}
+
+/* Adaptación a dispositivos pequeños */
+
+@media (max-width: 900px) {
+    #comparar .indicadores-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #btn-comparar {
+        width: 100%;
+    }
+}

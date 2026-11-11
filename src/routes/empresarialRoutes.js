@@ -5,11 +5,20 @@ const {
     consultarRuc
 } = require('../controllers/empresarialController');
 
-// Crear el enrutador de Express
+const {
+    obtenerHistorial,
+    obtenerBitacora
+} = require('../controllers/historialController');
+
 const router = express.Router();
 
-// Ruta para consultar información empresarial por RUC
+// Historial de consultas empresariales
+router.get('/historial', obtenerHistorial);
+
+// Bitácora de integración SOA
+router.get('/bitacora', obtenerBitacora);
+
+// Consulta empresarial por RUC
 router.get('/ruc/:ruc', consultarRuc);
 
-// Exportar el enrutador
 module.exports = router;

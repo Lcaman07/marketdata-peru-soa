@@ -60,6 +60,54 @@ async function registrarConsultaEmpresarial({
     }
 }
 
+async function listarHistorialEmpresarial() {
+    const sql = `
+        SELECT
+            id_consulta,
+            tipo_consulta,
+            ruc,
+            estado,
+            fecha_consulta
+        FROM consultas
+        WHERE tipo_consulta = 'EMPRESARIAL'
+        ORDER BY id_consulta DESC
+        LIMIT 20
+    `;
+
+    const [registros] = await db.execute(sql);
+
+    return registros;
+}
+
+async function listarBitacoraEmpresarial() {
+    const sql = `
+        SELECT
+            b.id_bitacora,
+            b.id_consulta,
+            c.ruc,
+            b.servicio,
+            b.operacion,
+            b.tipo_acceso,
+            b.estado,
+            b.codigo_http,
+            b.tiempo_respuesta_ms,
+            b.mensaje,
+            b.fecha_evento
+        FROM bitacora_integracion b
+        LEFT JOIN consultas c
+            ON b.id_consulta = c.id_consulta
+        WHERE b.servicio = 'SERVICIO_EMPRESARIAL'
+        ORDER BY b.id_bitacora DESC
+        LIMIT 20
+    `;
+
+    const [registros] = await db.execute(sql);
+
+    return registros;
+}
+
 module.exports = {
-    registrarConsultaEmpresarial
+    registrarConsultaEmpresarial,
+    listarHistorialEmpresarial,
+    listarBitacoraEmpresarial
 };

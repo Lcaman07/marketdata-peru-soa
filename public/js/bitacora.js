@@ -17,8 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const estado = document.getElementById(
         'estado-bitacora'
     );
+    const buscarRuc = document.getElementById(
+    'buscar-ruc-bitacora'
+);
 
-    if (!cuerpo || !boton || !estado) return;
+if (!cuerpo || !boton || !estado || !buscarRuc) return;
+
+let registrosCargados = [];
 
     function mostrarValor(id, valor) {
         document.getElementById(id).textContent = valor;
@@ -97,6 +102,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Filtrar la bitácora por número de RUC
+    function aplicarBusqueda() {
+
+        const rucBuscado = buscarRuc.value.trim();
+
+        const registrosFiltrados = registrosCargados.filter(
+            registro =>
+                rucBuscado === '' ||
+                String(registro.ruc ?? '').includes(rucBuscado)
+        );
+
+        mostrarRegistros(registrosFiltrados);
+
+        estado.textContent =
+            `Mostrando ${registrosFiltrados.length} de ` +
+            `${registrosCargados.length} operaciones consultadas.`;
+    }
+
     // Actualizar los indicadores
     function mostrarIndicadores(registros) {
 
@@ -164,15 +187,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 );
             }
 
-            const registros = resultado.datos;
 
-            mostrarIndicadores(registros);
-            mostrarRegistros(registros);
+const registros = resultado.datos;
 
-            estado.textContent =
-                `${registros.length} operaciones cargadas correctamente.`;
+// Guardar registros recuperados desde la API
+registrosCargados = registros;
 
-        } catch (error) {
+// Mantener los indicadores de todas las operaciones cargadas
+mostrarIndicadores(registros);
+
+// Mostrar los registros que coinciden con la búsqueda
+aplicarBusqueda();
+  } catch (error) {
             console.error('Error al cargar bitácora:', error);
 
             estado.textContent =
@@ -182,6 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
              'bitacora-errores', 'bitacora-tiempo']
                 .forEach(id => mostrarValor(id, '—'));
 
+            registrosCargados = [];
             mostrarRegistros([]);
 
         } finally {
@@ -191,6 +218,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     boton.addEventListener('click', cargarBitacora);
+    // Buscar sin volver a consultar la base de datos
+buscarRuc.addEventListener('input', aplicarBusqueda);
 
     // Actualizar automáticamente al entrar a la bitácora
 window.addEventListener('hashchange', () => {

@@ -53,6 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const datosEmpresariales =
             respuestaEmpresarial?.datos?.datos;
 
+        // Resultado del proveedor empresarial externo
+const respuestaEmpresarialOnline =
+    resultado.empresarialEnLinea;
+
+const datosEmpresarialesOnline =
+    respuestaEmpresarialOnline?.datos?.datos;
+
         // Estado general del análisis
         mostrarTexto(
             'soa-estado',
@@ -73,16 +80,32 @@ document.addEventListener('DOMContentLoaded', () => {
             )
         );
 
-        // Estado del contribuyente
-        let estadoEmpresarial = 'No disponible';
 
-        if (respuestaEmpresarial?.codigoHttp === 404) {
-            estadoEmpresarial = 'No encontrado en muestra local';
-        } else if (datosEmpresariales?.estado) {
+        // Seleccionar la información empresarial disponible
+        let estadoEmpresarial = 'No disponible';
+        let fuenteEmpresarial = 'Sin información empresarial';
+
+        if (
+            respuestaEmpresarial?.codigoHttp === 200 &&
+            datosEmpresariales?.estado
+        ) {
             estadoEmpresarial = datosEmpresariales.estado;
+            fuenteEmpresarial = 'SUNAT - Padrón local en MySQL';
+
+        } else if (
+            respuestaEmpresarialOnline?.codigoHttp === 200 &&
+            datosEmpresarialesOnline?.estado
+        ) {
+            estadoEmpresarial = datosEmpresarialesOnline.estado;
+            fuenteEmpresarial = 'OpenRUC - Proveedor externo';
+
+        } else if (respuestaEmpresarial?.codigoHttp === 404) {
+            estadoEmpresarial = 'No encontrado en muestra local';
         }
 
         mostrarTexto('soa-empresa', estadoEmpresarial);
+        mostrarTexto('soa-fuente-empresa', fuenteEmpresarial);
+
 
         // Resultado de la comparación geográfica
         const mensaje = resultado.comparacion?.mensaje ||
@@ -178,7 +201,7 @@ document.getElementById('btn-actualizar-bitacora')?.click();
 
 if (resultado.estado === 'COMPLETA') {
     estado.textContent =
-        'Los tres servicios respondieron correctamente.';
+'Análisis completado con información territorial y empresarial disponible.';
 } else if (resultado.estado === 'PARCIAL') {
     estado.textContent =
         'Análisis parcial: al menos uno de los tres ' +

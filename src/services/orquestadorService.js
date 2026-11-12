@@ -33,16 +33,28 @@ async function analizarZonaEmpresa(ubigeo, ruc) {
     }
 
 
-    // Consultar los tres servicios REST en paralelo
-    const [
-        resultadoTerritorial,
-        resultadoEmpresarial,
-        resultadoIneiEnLinea
-    ] = await Promise.allSettled([
-        consultarServicio(`/api/territorio/${ubigeo}`),
-        consultarServicio(`/api/empresas/ruc/${ruc}`),
-        consultarServicio(`/api/territorio/wfs/${ubigeo}`, 20000)
-    ]);
+
+const [
+    resultadoTerritorial,
+    resultadoEmpresarial,
+    resultadoIneiEnLinea,
+    resultadoEmpresarialEnLinea
+] = await Promise.allSettled([
+    // INEI: información territorial y poblacional local
+    consultarServicio(`/api/territorio/${ubigeo}`),
+
+    // SUNAT: padrón almacenado en MySQL
+    consultarServicio(`/api/empresas/ruc/${ruc}`),
+
+    // INEI: servicio WFS oficial en línea
+    consultarServicio(`/api/territorio/wfs/${ubigeo}`, 20000),
+
+    // OpenRUC: consulta REST para RUC que empiezan con 20
+    ruc.startsWith('20')
+        ? consultarServicio(`/api/empresas/online/${ruc}`, 15000)
+        : Promise.resolve(null)
+]);
+
 
 
     const territorio = resultadoTerritorial.status === 'fulfilled'
@@ -60,18 +72,62 @@ async function analizarZonaEmpresa(ubigeo, ruc) {
         : null;
 
 
-    const territorioDisponible = territorio?.codigoHttp === 200;
-    const empresaDisponible = empresa?.codigoHttp === 200;
-    const ineiEnLineaDisponible = ineiEnLinea?.codigoHttp === 200;
+// Información empresarial obtenida desde OpenRUC
+const empresarialEnLinea =
+    resultadoEmpresarialEnLinea.status === 'fulfilled'
+        ? resultadoEmpresarialEnLinea.value
+        : null;
 
-    const ubigeoEmpresa = empresaDisponible
+
+
+    // Comprobar disponibilidad de los servicios
+    const territorioDisponible = territorio?.codigoHttp === 200;
+
+    const empresaLocalDisponible = empresa?.codigoHttp === 200;
+
+    const empresaOnlineDisponible =
+        empresarialEnLinea?.codigoHttp === 200;
+
+    const ineiEnLineaDisponible =
+        ineiEnLinea?.codigoHttp === 200;
+
+    // La información empresarial puede provenir
+    // de MySQL o del proveedor externo OpenRUC
+    const empresaDisponible =
+        empresaLocalDisponible || empresaOnlineDisponible;
+
+    // Recuperar UBIGEO de ambas fuentes empresariales
+    const ubigeoLocal = empresaLocalDisponible
         ? empresa.datos?.datos?.ubigeo
         : null;
 
-    // Solo comparar ubicaciones cuando SUNAT tenga UBIGEO
-    const coincideUbigeo = territorioDisponible && ubigeoEmpresa
-        ? ubigeoEmpresa === ubigeo
+    const ubigeoOnline = empresaOnlineDisponible
+        ? empresarialEnLinea.datos?.datos?.ubigeo
         : null;
+
+    // Validar que el UBIGEO tenga seis dígitos
+    const esUbigeoValido = valor =>
+        /^\d{6}$/.test(String(valor ?? ''));
+
+    // Dar prioridad al padrón local cuando tenga UBIGEO
+    const ubigeoEmpresa = esUbigeoValido(ubigeoLocal)
+        ? String(ubigeoLocal)
+        : esUbigeoValido(ubigeoOnline)
+            ? String(ubigeoOnline)
+            : null;
+
+    // Identificar de dónde procede el UBIGEO empresarial
+    const fuenteUbigeo = esUbigeoValido(ubigeoLocal)
+        ? 'SUNAT - Padrón local'
+        : esUbigeoValido(ubigeoOnline)
+            ? 'OpenRUC - Proveedor externo'
+            : null;
+
+    // Comparar únicamente cuando existan datos suficientes
+    const coincideUbigeo =
+        territorioDisponible && ubigeoEmpresa !== null
+            ? ubigeoEmpresa === ubigeo
+            : null;
 
     return {
 
@@ -91,13 +147,18 @@ async function analizarZonaEmpresa(ubigeo, ruc) {
             ruc
         },
 
+
 territorial: territorio,
 empresarial: empresa,
 ineiEnLinea: ineiEnLinea,
+empresarialEnLinea: empresarialEnLinea,
 
-        comparacion: {
-            coincideUbigeo,
-            mensaje: coincideUbigeo === null
+
+comparacion: {
+    coincideUbigeo,
+    ubigeoEmpresa,
+    fuenteUbigeo,
+    mensaje: coincideUbigeo === null
                 ? 'No hay datos suficientes para comprobar la ubicación empresarial'
                 : coincideUbigeo
                     ? 'El UBIGEO empresarial coincide con la zona consultada'

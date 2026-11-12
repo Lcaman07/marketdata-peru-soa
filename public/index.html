@@ -587,6 +587,10 @@
 
     <p id="soa-mensaje">—</p>
 
+<p id="soa-fuente-empresa">
+    Fuente empresarial pendiente.
+</p>
+
     <!-- Información oficial del INEI en línea -->
     <p id="soa-inei-wfs" role="status">
         Información del INEI WFS pendiente.
@@ -597,11 +601,13 @@
 
     </div>
 
-    <p class="nota-fuente">
-        Las fuentes son INEI y una copia local del padrón
-        SUNAT. La integración no constituye una consulta
-        en tiempo real a SUNAT.
-    </p>
+
+<p class="nota-fuente">
+    Fuentes: INEI (datos territoriales y servicio WFS oficial
+    en línea), padrón SUNAT almacenado en MySQL y OpenRUC
+    como proveedor externo de consultas empresariales REST.
+    OpenRUC no es una API oficial de SUNAT.
+</p>
 
 </section>
 

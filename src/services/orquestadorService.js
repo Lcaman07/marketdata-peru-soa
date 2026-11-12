@@ -9,9 +9,9 @@ const { validarRuc } = require('./empresarialService');
 
 const API_BASE = `http://127.0.0.1:${process.env.PORT || 3000}`;
 
-async function consultarServicio(ruta) {
+async function consultarServicio(ruta, tiempoMaximo = 10000) {
     const respuesta = await fetch(`${API_BASE}${ruta}`, {
-        signal: AbortSignal.timeout(10000)
+        signal: AbortSignal.timeout(tiempoMaximo)
     });
 
     const datos = await respuesta.json();
@@ -32,12 +32,18 @@ async function analizarZonaEmpresa(ubigeo, ruc) {
         throw new Error('El RUC ingresado no es válido');
     }
 
-    // Consultar ambos servicios REST en paralelo
-    const [resultadoTerritorial, resultadoEmpresarial] =
-        await Promise.allSettled([
-            consultarServicio(`/api/territorio/${ubigeo}`),
-            consultarServicio(`/api/empresas/ruc/${ruc}`)
-        ]);
+
+    // Consultar los tres servicios REST en paralelo
+    const [
+        resultadoTerritorial,
+        resultadoEmpresarial,
+        resultadoIneiEnLinea
+    ] = await Promise.allSettled([
+        consultarServicio(`/api/territorio/${ubigeo}`),
+        consultarServicio(`/api/empresas/ruc/${ruc}`),
+        consultarServicio(`/api/territorio/wfs/${ubigeo}`, 20000)
+    ]);
+
 
     const territorio = resultadoTerritorial.status === 'fulfilled'
         ? resultadoTerritorial.value
@@ -47,8 +53,16 @@ async function analizarZonaEmpresa(ubigeo, ruc) {
         ? resultadoEmpresarial.value
         : null;
 
+
+    // Resultado de la consulta al INEI oficial en línea
+    const ineiEnLinea = resultadoIneiEnLinea.status === 'fulfilled'
+        ? resultadoIneiEnLinea.value
+        : null;
+
+
     const territorioDisponible = territorio?.codigoHttp === 200;
     const empresaDisponible = empresa?.codigoHttp === 200;
+    const ineiEnLineaDisponible = ineiEnLinea?.codigoHttp === 200;
 
     const ubigeoEmpresa = empresaDisponible
         ? empresa.datos?.datos?.ubigeo
@@ -60,19 +74,26 @@ async function analizarZonaEmpresa(ubigeo, ruc) {
         : null;
 
     return {
-        estado: territorioDisponible && empresaDisponible
+
+        estado: territorioDisponible &&
+                empresaDisponible &&
+                ineiEnLineaDisponible
             ? 'COMPLETA'
-            : territorioDisponible || empresaDisponible
+            : territorioDisponible ||
+              empresaDisponible ||
+              ineiEnLineaDisponible
                 ? 'PARCIAL'
                 : 'ERROR',
+
 
         consulta: {
             ubigeo,
             ruc
         },
 
-        territorial: territorio,
-        empresarial: empresa,
+territorial: territorio,
+empresarial: empresa,
+ineiEnLinea: ineiEnLinea,
 
         comparacion: {
             coincideUbigeo,

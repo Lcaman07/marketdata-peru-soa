@@ -90,6 +90,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         mostrarTexto('soa-mensaje', mensaje);
 
+// Resultado del servicio oficial INEI WFS
+const respuestaIneiWfs = resultado.ineiEnLinea;
+
+const datosIneiWfs =
+    respuestaIneiWfs?.datos?.datos;
+
+const consultaWfsCorrecta =
+    respuestaIneiWfs?.codigoHttp === 200 &&
+    datosIneiWfs?.ubigeo === resultado.consulta?.ubigeo;
+
+let mensajeIneiWfs;
+
+if (consultaWfsCorrecta) {
+    mensajeIneiWfs =
+        `INEI WFS en línea: ${datosIneiWfs.nombre} ` +
+        `(UBIGEO ${datosIneiWfs.ubigeo}). ` +
+        'Consulta oficial realizada correctamente.';
+} else {
+    mensajeIneiWfs =
+        'INEI WFS en línea: información no disponible ' +
+        'para este análisis.';
+}
+
+mostrarTexto('soa-inei-wfs', mensajeIneiWfs);
+
+
         // Mostrar las tarjetas
         contenedor.hidden = false;
     }
@@ -150,13 +176,13 @@ document.getElementById('btn-actualizar-bitacora')?.click();
 
             mostrarResultado(resultado);
 
-            if (resultado.estado === 'COMPLETA') {
-                estado.textContent =
-                    'Ambos servicios respondieron correctamente.';
-            } else if (resultado.estado === 'PARCIAL') {
-                estado.textContent =
-                    'Análisis parcial: uno de los servicios ' +
-                    'no devolvió información completa.';
+if (resultado.estado === 'COMPLETA') {
+    estado.textContent =
+        'Los tres servicios respondieron correctamente.';
+} else if (resultado.estado === 'PARCIAL') {
+    estado.textContent =
+        'Análisis parcial: al menos uno de los tres ' +
+        'servicios no devolvió información completa.';
             } else {
                 estado.textContent =
                     'El análisis finalizó con estado: ' +

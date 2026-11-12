@@ -149,3 +149,22 @@
         gap: 15px;
     }
 }
+
+
+/* ========================================
+   MAPA TERRITORIAL INEI WMS
+======================================== */
+
+.mapa-inei-contenedor {
+    margin-top: 24px;
+}
+
+.mapa-inei-imagen {
+    display: block;
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    margin: 20px auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}

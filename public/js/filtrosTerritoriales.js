@@ -14,8 +14,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const distrito =
         document.getElementById('filtro-distrito');
+    const mapa =
+    document.getElementById('mapa-inei-dinamico');
 
     if (!departamento || !provincia || !distrito) return;
+
+// Actualizar el mapa oficial del INEI según el distrito
+function actualizarMapa(ubigeo) {
+
+    if (!mapa) return;
+
+    if (!/^\d{6}$/.test(ubigeo)) {
+        mapa.removeAttribute('src');
+        mapa.style.display = 'none';
+        return;
+    }
+
+    mapa.style.display = 'block';
+
+    mapa.src =
+        `/api/territorio/wms/mapa-distrital/${ubigeo}`;
+
+    mapa.alt =
+        `Mapa territorial del distrito con UBIGEO ${ubigeo}`;
+}
 
     // Ubicación inicial: Chachapoyas, Amazonas
     const ubicacionInicial = {
@@ -139,22 +161,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Cuando cambia el departamento
-    departamento.addEventListener('change', async () => {
-        await cargarProvincias(departamento.value);
-    });
 
-    // Cuando cambia la provincia
-    provincia.addEventListener('change', async () => {
-        await cargarDistritos(provincia.value);
-    });
+// Cuando cambia el departamento
+departamento.addEventListener('change', async () => {
+    actualizarMapa('');
+    await cargarProvincias(departamento.value);
+});
 
-    // Cuando cambia el distrito, actualizar el gráfico
-    distrito.addEventListener('change', () => {
-        if (distrito.value) {
-            cargarGraficoPoblacion(distrito.value);
-        }
-    });
+// Cuando cambia la provincia
+provincia.addEventListener('change', async () => {
+    actualizarMapa('');
+    await cargarDistritos(provincia.value);
+});
+
+
+
+// Cuando cambia el distrito, actualizar gráfico y mapa
+distrito.addEventListener('change', () => {
+
+    actualizarMapa(distrito.value);
+
+    if (distrito.value) {
+        cargarGraficoPoblacion(distrito.value);
+    }
+
+});
+
 
     // Cargar departamentos al abrir el dashboard
     try {
@@ -179,6 +211,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             ubicacionInicial.provincia,
             ubicacionInicial.distrito
         );
+
+        actualizarMapa(distrito.value);
 
     } catch (error) {
         console.error('Error al cargar departamentos:', error);
